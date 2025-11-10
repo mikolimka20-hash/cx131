@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Telegram Web — фон + меню</title>
+<style>
+  :root{
+    --menu-bg: rgba(30,30,30,0.95); /* тёмно-серый полупрозрачный */
+    --accent: #20a4ff; /* цвет акцента (изменяй при желании) */
+    --text: #e6e6e6;
+    --muted: #bdbdbd;
+    --radius: 12px;
+    --shadow: 0 8px 30px rgba(0,0,0,0.6);
+    --menu-width: 220px;
+  }
+
+  /* Сброс */
+  html,body{height:100%;margin:0;font-family: Inter, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;background:#0b0b0b;color:var(--text);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
+  /* Здесь вставь свой фон (замени url(...)) */
+  body{
+    background-image: url('your-background.jpg'); /* <- вставь свой файл */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
+  /* Полупрозрачный слой, чтобы меню читалось поверх фона */
+  .overlay{
+    position:fixed;inset:0;pointer-events:none;
+  }
+
+  /* Хедер для расположения гамбургера */
+  .top-left {
+    position: fixed;
+    top: 18px;
+    left: 18px;
+    z-index: 60;
+    pointer-events:auto;
+  }
+
+  /* Кнопка гамбургера */
+  .hamburger {
+    display: inline-grid;
+    place-items: center;
+    width:48px;height:48px;
+    background:var(--menu-bg);
+    border-radius:10px;
+    box-shadow: var(--shadow);
+    cursor:pointer;
+    border:1px solid rgba(255,255,255,0.03);
+    transition: transform .18s ease, background .18s ease;
+    padding:6px;
+  }
+  .hamburger:active{ transform: scale(.98); }
+  .hamburger:focus{ outline: 3px solid rgba(32,164,255,0.18); }
+
+  /* Анимация полосок (меняет вид при открытом меню) */
+  .hamburger .bars{
+    width:22px;height:16px;display:block;position:relative;
+  }
+  .hamburger .bars span{
+    position:absolute;left:0;right:0;height:2px;background:var(--text);border-radius:2px;display:block;transition:transform .18s ease, opacity .14s ease, top .18s ease;
+  }
+  .hamburger .bars span:nth-child(1){ top:0; }
+  .hamburger .bars span:nth-child(2){ top:7px; }
+  .hamburger .bars span:nth-child(3){ top:14px; }
+
+  /* Состояние открытого меню (класс .open добавляет JS) */
+  .hamburger.open .bars span:nth-child(1){ transform: translateY(7px) rotate(45deg); top:7px; }
+  .hamburger.open .bars span:nth-child(2){ opacity:0; transform: scaleX(0); }
+  .hamburger.open .bars span:nth-child(3){ transform: translateY(-7px) rotate(-45deg); top:7px; }
+
+  /* Боковое меню */
+  .menu {
+    position: fixed;
+    top: 18px;
+    left: 18px;
+    width: var(--menu-width);
+    transform: translateY(-8px) translateX(0);
+    padding: 12px;
+    background: var(--menu-bg);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    z-index: 55;
+    pointer-events:auto;
+    transition: opacity .18s ease, transform .22s cubic-bezier(.2,.9,.3,1);
+    opacity: 0;
+    visibility: hidden;
+    border: 1px solid rgba(255,255,255,0.03);
+  }
+  .menu.open{
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(6px) translateX(0);
+  }
+
+  .menu .title{
+    font-weight:600;
+    color:var(--text);
+    letter-spacing: .3px;
+    margin-bottom:10px;
+    font-size:14px;
+  }
+  .menu nav{display:flex;flex-direction:column;gap:8px;}
+
+  .menu a{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:9px 12px;
+    border-radius:10px;
+    text-decoration:none;
+    color:var(--text);
+    font-size:15px;
+    transition: background .12s ease, transform .08s ease;
+  }
+  .menu a:hover{ background: rgba(255,255,255,0.03); transform: translateX(4px); }
+  .menu a:active{ transform: translateX(2px) scale(.998); }
+
+  .menu a .ico{
+    width:18px;height:18px;display:inline-grid;place-items:center;color:var(--muted);font-size:14px;
+  }
+
+  /* Акцентная кнопка поддержки */
+  .support{
+    margin-top:8px;
+    display:block;
+    width:100%;
+    text-align:center;
+    padding:10px 12px;
+    background: linear-gradient(90deg,var(--accent), #0fb1ff 120%);
+    color:#021019;
+    font-weight:700;
+    border-radius:10px;
+    text-decoration:none;
+    box-shadow: 0 6px 18px rgba(32,164,255,0.12), inset 0 -2px 6px rgba(0,0,0,0.12);
+    transition: transform .12s ease, opacity .12s ease;
+  }
+  .support:active{ transform: translateY(1px); }
+  .support:focus{ outline: 3px solid rgba(32,164,255,0.18); }
+
+  /* Подсказка (для мобильных) */
+  .hint {
+    margin-top:12px;
+    font-size:12px;color:var(--muted);
+    text-align:center;
+  }
+
+  /* Адаптив */
+  @media (max-width:520px){
+    .menu { width: 82vw; left: 12px; right:12px; }
+  }
+
+  /* Немного декоративных иконок через SVG (цвет берётся из color) */
+  .ico svg{ width:18px;height:18px; display:block; fill:currentColor; }
+
+  /* Скрин-ридер текст скрытый, но доступный */
+  .sr-only{ position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
+</style>
+</head>
+<body>
+
+<!-- Оболочка: ты можешь оставить фон как есть или заменить -->
+<div class="overlay" aria-hidden="true"></div>
+
+<!-- Top-left: гамбургер и меню -->
+<div class="top-left">
+
+  <!-- Кнопка гамбургер -->
+  <button id="hamburger" class="hamburger" aria-expanded="false" aria-controls="main-menu" aria-label="Открыть меню">
+    <span class="bars" aria-hidden="true">
+      <span></span><span></span><span></span>
+    </span>
+  </button>
+
+  <!-- Собственно меню (изначально скрыто) -->
+  <aside id="main-menu" class="menu" role="menu" aria-hidden="true" aria-labelledby="hamburger">
+    <div class="title">Меню</div>
+    <nav role="navigation" aria-label="Основные разделы">
+      <a href="#about" role="menuitem" tabindex="-1">
+        <span class="ico" aria-hidden="true">
+          <!-- simple person icon -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="2.6"/><path d="M6.5 20c0-2.7 2.5-4.7 5.5-4.7s5.5 2 5.5 4.7"/></svg>
+        </span>
+        Обо мне
+      </a>
+
+      <a href="#services" role="menuitem" tabindex="-1">
+        <span class="ico" aria-hidden="true">
+          <!-- briefcase -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="7" width="18" height="12" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+        </span>
+        Услуги
+      </a>
+
+      <a href="#portfolio" role="menuitem" tabindex="-1">
+        <span class="ico" aria-hidden="true">
+          <!-- portfolio/gallery -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 14h18"/><path d="M7 8h.01"/></svg>
+        </span>
+        Портфолио
+      </a>
+
+      <a href="#reviews" role="menuitem" tabindex="-1">
+        <span class="ico" aria-hidden="true">
+          <!-- message -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </span>
+        Отзывы
+      </a>
+
+      <a href="#support" role="menuitem" class="support" tabindex="-1">
+        Поддержать автора
+      </a>
+
+      <div class="hint" aria-hidden="true">Нажми Esc или клик вне меню, чтобы закрыть</div>
+    </nav>
+  </aside>
+
+</div>
+
+<!-- Контент-место: сюда вставляй основной контент страницы при необходимости -->
+<main id="content" style="min-height:100vh;display:flex;align-items:center;justify-content:center;pointer-events:none;">
+  <!-- Можно ничего не показывать: пользователь будет использовать изображение фона в Telegram -->
+</main>
+
+<script>
+  (function(){
+    const ham = document.getElementById('hamburger');
+    const menu = document.getElementById('main-menu');
+    const focusable = Array.from(menu.querySelectorAll('[role="menuitem"], .support'));
+    let open = false;
+
+    function openMenu(){
+      open = true;
+      ham.classList.add('open');
+      ham.setAttribute('aria-expanded','true');
+      menu.classList.add('open');
+      menu.setAttribute('aria-hidden','false');
+      // Делать элементы меню доступными по табу
+      focusable.forEach(el => el.setAttribute('tabindex','0'));
+      // поставить фокус на первый элемент
+      setTimeout(()=> focusable[0].focus(), 180);
+      // слушать клики вне
+      document.addEventListener('pointerdown', onOutside);
+      document.addEventListener('keydown', onKey);
+    }
+
+    function closeMenu(){
+      open = false;
+      ham.classList.remove('open');
+      ham.setAttribute('aria-expanded','false');
+      menu.classList.remove('open');
+      menu.setAttribute('aria-hidden','true');
+      focusable.forEach(el => el.setAttribute('tabindex','-1'));
+      ham.focus();
+      document.removeEventListener('pointerdown', onOutside);
+      document.removeEventListener('keydown', onKey);
+    }
+
+    function toggleMenu(){
+      if(open) closeMenu(); else openMenu();
+    }
+
+    function onOutside(e){
+      if(!menu.contains(e.target) && !ham.contains(e.target)){
+        closeMenu();
+      }
+    }
+
+    function onKey(e){
+      if(e.key === 'Escape'){ closeMenu(); }
+      if(e.key === 'Tab' && open){
+        // предотвратить уход фокуса из меню: круговой таб
+        const idx = focusable.indexOf(document.activeElement);
+        if(e.shiftKey && idx === 0){ e.preventDefault(); focusable[focusable.length-1].focus(); }
+        else if(!e.shiftKey && idx === focusable.length-1){ e.preventDefault(); focusable[0].focus(); }
+      }
+      // Enter/Space на пункте меню будет работать естественно (ссылка)
+    }
+
+    ham.addEventListener('click', (ev)=> {
+      ev.stopPropagation();
+      toggleMenu();
+    });
+
+    // Инициализация: скрыть элементы из таба
+    focusable.forEach(el => el.setAttribute('tabindex','-1'));
+
+    // Дополнительно: если пользователь кликает ссылку — закрываем меню
+    menu.addEventListener('click', (e)=>{
+      const a = e.target.closest('a[role="menuitem"], a.support');
+      if(a){
+        // Если это внутренняя якорная ссылка, закрываем, но даём время на щелчок
+        setTimeout(()=> closeMenu(), 120);
+      }
+    });
+  })();
+</script>
+
+</body>
+</html>
