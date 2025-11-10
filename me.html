@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Мой сайт</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Ubuntu', sans-serif;
+      height: 100vh;
+      background: #000; /* ← сюда ты добавишь свой фон позже */
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* 🔥 Неоновая рамка */
+    .neon-border {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      box-shadow:
+        inset 0 0 30px rgba(255, 0, 0, 0.3),
+        0 0 40px rgba(255, 0, 0, 0.5),
+        0 0 60px rgba(255, 0, 0, 0.4);
+      border: 2px solid rgba(255, 0, 0, 0.4);
+      border-radius: 8px;
+      pointer-events: none;
+      animation: pulse 4s infinite alternate;
+    }
+
+    /* ✨ Плавное свечение */
+    @keyframes pulse {
+      0% {
+        box-shadow:
+          inset 0 0 25px rgba(255, 0, 0, 0.25),
+          0 0 30px rgba(255, 0, 0, 0.3),
+          0 0 45px rgba(255, 0, 0, 0.2);
+      }
+      100% {
+        box-shadow:
+          inset 0 0 40px rgba(255, 0, 0, 0.4),
+          0 0 60px rgba(255, 0, 0, 0.5),
+          0 0 80px rgba(255, 0, 0, 0.4);
+      }
+    }
+
+    /* Меню */
+    .menu {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 10;
+    }
+
+    .menu-btn {
+      background: #222;
+      color: #fff;
+      padding: 10px 14px;
+      font-size: 22px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .menu-btn:hover {
+      background: #333;
+    }
+
+    .menu-list {
+      list-style: none;
+      background: rgba(30, 30, 30, 0.9);
+      margin-top: 10px;
+      border-radius: 8px;
+      display: none;
+      padding: 10px 0;
+      backdrop-filter: blur(5px);
+    }
+
+    .menu-list.show {
+      display: block;
+    }
+
+    .menu-list li {
+      margin: 8px 20px;
+    }
+
+    .menu-list a {
+      text-decoration: none;
+      color: #fff;
+      font-size: 18px;
+      transition: color 0.3s, text-shadow 0.3s;
+    }
+
+    .menu-list a:hover {
+      color: #ff3b3b;
+      text-shadow: 0 0 8px rgba(255, 0, 0, 0.8);
+    }
+  </style>
+</head>
+<body>
+  <div class="neon-border"></div>
+
+  <!-- Меню -->
+  <nav class="menu">
+    <div class="menu-btn" id="menu-btn">&#9776;</div>
+    <ul class="menu-list" id="menu-list">
+      <li><a href="#">Услуги</a></li>
+      <li><a href="#">Портфолио</a></li>
+      <li><a href="#">Отзывы</a></li>
+      <li><a href="#">Поддержать автора</a></li>
+    </ul>
+  </nav>
+
+  <script>
+    const btn = document.getElementById("menu-btn");
+    const list = document.getElementById("menu-list");
+
+    btn.addEventListener("click", () => {
+      list.classList.toggle("show");
+    });
+  </script>
+</body>
+</html>
