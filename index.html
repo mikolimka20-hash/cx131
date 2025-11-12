@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Telegram Web — фон + меню</title>
+<title>cx bot</title>
 <style>
   :root{
-    --menu-bg: rgba(30,30,30,0.95);
+    --menu-bg: rgba(25,25,25,0.92);
     --accent: #20a4ff;
     --text: #e6e6e6;
     --muted: #bdbdbd;
@@ -18,24 +18,68 @@
     height:100%;
     margin:0;
     font-family: Inter, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    background:#0b0b0b;
     color:var(--text);
     -webkit-font-smoothing:antialiased;
+    background: linear-gradient(-45deg,#0b0f14,#141a22,#0e1822,#192029);
+    background-size: 300% 300%;
+    animation: bgMove 18s ease infinite;
+    overflow:hidden;
   }
 
-  body{
-    background-image: url('C3C1CC4D-3740-4D61-B700-F03D2AACB810.jpeg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    opacity: 0;
-    transition: opacity 0.8s ease;
+  @keyframes bgMove {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
   }
 
-  body.fade-in {
-    opacity: 1;
+  /* --- Центр контента --- */
+  .center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    max-width: 620px;
+    padding: 0 20px;
   }
 
+  h1 {
+    font-size: 2.4rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  h1 span {
+    color: var(--accent);
+  }
+
+  .wave {
+    display: inline-block;
+    animation: wave 1.7s infinite ease-in-out;
+    transform-origin: 70% 70%;
+  }
+
+  @keyframes wave {
+    0% { transform: rotate(0deg); }
+    10% { transform: rotate(14deg); }
+    20% { transform: rotate(-8deg); }
+    30% { transform: rotate(14deg); }
+    40% { transform: rotate(-4deg); }
+    50% { transform: rotate(10deg); }
+    60%,100% { transform: rotate(0deg); }
+  }
+
+  p {
+    color: var(--muted);
+    line-height: 1.6;
+    margin: 10px 0;
+    font-size: 1.05rem;
+  }
+
+  /* --- Меню --- */
   .top-left {
     position: fixed;
     top: 18px;
@@ -79,26 +123,38 @@
     box-shadow: var(--shadow);
     opacity: 0;
     visibility: hidden;
+    transform: translateY(-10px);
     transition: opacity .18s ease, transform .22s cubic-bezier(.2,.9,.3,1);
   }
 
-  .menu.open{opacity:1;visibility:visible;transform:translateY(6px);}
-  .menu .title{font-weight:600;color:var(--text);margin-bottom:10px;font-size:14px;}
-  .menu nav{display:flex;flex-direction:column;gap:8px;}
-  .menu a{
+  .menu.open { opacity:1;visibility:visible;transform:translateY(6px); }
+
+  .menu .title { font-weight:600;color:var(--text);margin-bottom:10px;font-size:14px; }
+  .menu nav { display:flex;flex-direction:column;gap:8px; }
+
+  .menu a {
     display:flex;align-items:center;gap:10px;
     padding:9px 12px;border-radius:10px;text-decoration:none;
-    color:var(--text);font-size:15px;transition: background .12s ease, transform .08s ease;
+    color:var(--text);font-size:15px;
+    transition: background .12s ease, transform .08s ease;
   }
-  .menu a:hover{background:rgba(255,255,255,0.03);transform:translateX(4px);}
-  .menu a .ico{width:18px;height:18px;display:inline-grid;place-items:center;color:var(--muted);}
-  .support{
+
+  .menu a:hover { background:rgba(255,255,255,0.04);transform:translateX(4px); }
+
+  .menu a .ico {
+    width:18px;height:18px;display:inline-grid;place-items:center;color:var(--muted);
+  }
+
+  .support {
     margin-top:8px;padding:10px 12px;text-align:center;border-radius:10px;
     background:linear-gradient(90deg,var(--accent),#0fb1ff 120%);
     color:#021019;font-weight:700;text-decoration:none;
     box-shadow:0 6px 18px rgba(32,164,255,0.12);
   }
-  .hint{margin-top:12px;font-size:12px;color:var(--muted);text-align:center;}
+
+  .hint {
+    margin-top:12px;font-size:12px;color:var(--muted);text-align:center;
+  }
 </style>
 </head>
 <body>
@@ -111,35 +167,24 @@
   <aside id="main-menu" class="menu">
     <div class="title">Меню</div>
     <nav>
-      <a href="me.html" class="fade-link">
-        <span class="ico">👤</span> Обо мне
-      </a>
-      <a href="#services"><span class="ico">💼</span> Услуги</a>
-      <a href="#portfolio"><span class="ico">🖼️</span> Портфолио</a>
-      <a href="#reviews"><span class="ico">💬</span> Отзывы</a>
-      <a href="#support" class="support">Поддержать автора</a>
+      <a href="services.html"><span class="ico">💼</span> Услуги</a>
+      <a href="portfolio.html"><span class="ico">🖼️</span> Портфолио</a>
+      <a href="reviews.html"><span class="ico">💬</span> Отзывы</a>
+      <a href="support.html" class="support">Поддержать автора</a>
       <div class="hint">Нажми Esc или клик вне меню</div>
     </nav>
   </aside>
 </div>
 
+<div class="center">
+  <h1>Привет <span class="wave">👋</span> Я <span>Даниил</span></h1>
+  <p>Разрабатываю <strong>веб-сайты</strong>, <strong>Telegram-ботов</strong> и системы автоматизации.  
+     Люблю простые интерфейсы, умные решения и нестандартные задачи.</p>
+  <p>Открой меню в левом верхнем углу — там всё самое интересное 🚀</p>
+</div>
+
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-  document.body.classList.add("fade-in"); // плавное появление страницы
-
-  // плавный переход на другую страницу
-  const links = document.querySelectorAll(".fade-link");
-  links.forEach(link => {
-    link.addEventListener("click", (e) => {
-      e.preventDefault();
-      const target = e.currentTarget.getAttribute("href");
-      document.body.classList.remove("fade-in");
-      document.body.style.opacity = 0;
-      setTimeout(() => { window.location.href = target; }, 500);
-    });
-  });
-
-  // меню
   const ham = document.getElementById("hamburger");
   const menu = document.getElementById("main-menu");
   let open = false;
@@ -150,8 +195,16 @@ document.addEventListener("DOMContentLoaded", () => {
     menu.classList.toggle("open");
   });
 
-  document.addEventListener("click", (e)=>{
-    if(open && !menu.contains(e.target) && !ham.contains(e.target)){
+  document.addEventListener("click", (e) => {
+    if(open && !menu.contains(e.target) && !ham.contains(e.target)) {
+      ham.classList.remove("open");
+      menu.classList.remove("open");
+      open = false;
+    }
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if(e.key === "Escape" && open){
       ham.classList.remove("open");
       menu.classList.remove("open");
       open = false;
@@ -161,4 +214,3 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
-

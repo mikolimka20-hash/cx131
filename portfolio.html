@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Портфолио</title>
+<style>
+  :root{
+    --menu-bg: rgba(25,25,25,0.92);
+    --accent: #20a4ff;
+    --text: #e6e6e6;
+    --muted: #bdbdbd;
+    --shadow: 0 8px 30px rgba(0,0,0,0.6);
+    --menu-width: 220px;
+  }
+
+  html,body{
+    height:100%;
+    margin:0;
+    font-family: Inter, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color:var(--text);
+    -webkit-font-smoothing:antialiased;
+  }
+
+  body{
+    background: radial-gradient(circle at 20% 30%, #10141b, #0a0d12 60%, #06080a 100%);
+    background-attachment: fixed;
+    background-size: cover;
+    background-repeat: no-repeat;
+    transition: opacity 0.8s ease;
+    opacity: 1;
+  }
+
+  /* Меню и гамбургер */
+  .top-left {
+    position: fixed;
+    top: 18px;
+    left: 18px;
+    z-index: 60;
+  }
+
+  .hamburger {
+    display: inline-grid;
+    place-items: center;
+    width:48px;height:48px;
+    background:var(--menu-bg);
+    border-radius:10px;
+    box-shadow: var(--shadow);
+    cursor:pointer;
+    border:1px solid rgba(255,255,255,0.03);
+    transition: transform .18s ease, background .18s ease;
+    padding:6px;
+  }
+
+  .hamburger .bars{width:22px;height:16px;display:block;position:relative;}
+  .hamburger .bars span{
+    position:absolute;left:0;right:0;height:2px;background:var(--text);border-radius:2px;display:block;
+    transition:transform .18s ease, opacity .14s ease, top .18s ease;
+  }
+  .hamburger .bars span:nth-child(1){top:0;}
+  .hamburger .bars span:nth-child(2){top:7px;}
+  .hamburger .bars span:nth-child(3){top:14px;}
+  .hamburger.open .bars span:nth-child(1){transform: translateY(7px) rotate(45deg);top:7px;}
+  .hamburger.open .bars span:nth-child(2){opacity:0;}
+  .hamburger.open .bars span:nth-child(3){transform: translateY(-7px) rotate(-45deg);top:7px;}
+
+  .menu {
+    position: fixed;
+    top: 18px;
+    left: 18px;
+    width: var(--menu-width);
+    padding: 12px;
+    background: var(--menu-bg);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity .18s ease, transform .22s cubic-bezier(.2,.9,.3,1);
+  }
+
+  .menu.open{opacity:1;visibility:visible;transform:translateY(6px);}
+  .menu .title{font-weight:600;color:var(--text);margin-bottom:10px;font-size:14px;}
+  .menu nav{display:flex;flex-direction:column;gap:8px;}
+  .menu a{
+    display:flex;align-items:center;gap:10px;
+    padding:9px 12px;border-radius:10px;text-decoration:none;
+    color:var(--text);font-size:15px;transition: background .12s ease, transform .08s ease;
+  }
+  .menu a:hover{background:rgba(255,255,255,0.03);transform:translateX(4px);}
+  .menu a .ico{width:18px;height:18px;display:inline-grid;place-items:center;color:var(--muted);}
+  .support{
+    margin-top:8px;padding:10px 12px;text-align:center;border-radius:10px;
+    background:linear-gradient(90deg,var(--accent),#0fb1ff 120%);
+    color:#021019;font-weight:700;text-decoration:none;
+    box-shadow:0 6px 18px rgba(32,164,255,0.12);
+  }
+  .hint{margin-top:12px;font-size:12px;color:var(--muted);text-align:center;}
+
+  /* Центральный блок */
+  .center-message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align:center;
+    background:rgba(20,26,32,0.72);
+    padding:36px 48px;
+    border-radius:18px;
+    box-shadow:0 6px 26px rgba(0,0,0,0.5);
+    max-width: 620px;
+    backdrop-filter: blur(6px);
+  }
+
+  .center-message h1 {
+    margin:0;
+    font-size:30px;
+    font-weight:700;
+    color:var(--text);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+  }
+
+  /* --- Анимация спикеров --- */
+  .speakers {
+    display: flex;
+    gap: 3px;
+    align-items: flex-end;
+    height: 18px;
+    width: 24px;
+  }
+  .speaker-bar {
+    width: 3px;
+    background: var(--accent);
+    border-radius: 4px;
+    animation: sound 1.1s infinite ease-in-out;
+  }
+  .speaker-bar:nth-child(1) { animation-delay: 0s; }
+  .speaker-bar:nth-child(2) { animation-delay: 0.15s; }
+  .speaker-bar:nth-child(3) { animation-delay: 0.3s; }
+  .speaker-bar:nth-child(4) { animation-delay: 0.45s; }
+  .speaker-bar:nth-child(5) { animation-delay: 0.6s; }
+
+  @keyframes sound {
+    0% { height: 4px; opacity: 0.8; }
+    50% { height: 18px; opacity: 1; }
+    100% { height: 4px; opacity: 0.8; }
+  }
+
+  .center-message p {
+    margin-top:14px;
+    color:var(--muted);
+    font-size:18px;
+    line-height:1.5;
+  }
+
+  @media (max-width: 768px) {
+    .center-message {
+      padding:24px 28px;
+      width:88%;
+    }
+    .center-message h1 { font-size:24px; }
+    .center-message p { font-size:16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Меню -->
+<div class="top-left">
+  <button id="hamburger" class="hamburger" aria-label="Открыть меню">
+    <span class="bars"><span></span><span></span><span></span></span>
+  </button>
+  <aside id="main-menu" class="menu">
+    <div class="title">Меню</div>
+    <nav>
+      <a href="services.html" class="fade-link"><span class="ico">💼</span> Услуги</a>
+      <a href="portfolio.html" class="fade-link"><span class="ico">🖼️</span> Портфолио</a>
+      <a href="reviews.html" class="fade-link"><span class="ico">💬</span> Отзывы</a>
+      <a href="support.html" class="support fade-link">Поддержать автора</a>
+      <div class="hint">Нажми Esc или клик вне меню</div>
+    </nav>
+  </aside>
+</div>
+
+<!-- Контент -->
+<div class="center-message">
+  <h1>
+    Портфолио
+    <div class="speakers">
+      <div class="speaker-bar"></div>
+      <div class="speaker-bar"></div>
+      <div class="speaker-bar"></div>
+      <div class="speaker-bar"></div>
+      <div class="speaker-bar"></div>
+    </div>
+  </h1>
+  <p>Пока нет готовых проектов — старые утеряны.<br><br>
+  Но уже совсем скоро <b>любой ваш проект</b> может красоваться на этой странице!</p>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const links = document.querySelectorAll(".fade-link");
+  links.forEach(link => {
+    link.addEventListener("click", (e) => {
+      e.preventDefault();
+      const target = e.currentTarget.getAttribute("href");
+      document.body.style.opacity = 0;
+      setTimeout(() => window.location.href = target, 500);
+    });
+  });
+
+  const ham = document.getElementById("hamburger");
+  const menu = document.getElementById("main-menu");
+  let open = false;
+
+  ham.addEventListener("click", () => {
+    open = !open;
+    ham.classList.toggle("open");
+    menu.classList.toggle("open");
+  });
+
+  document.addEventListener("click", (e)=>{
+    if(open && !menu.contains(e.target) && !ham.contains(e.target)){
+      ham.classList.remove("open");
+      menu.classList.remove("open");
+      open = false;
+    }
+  });
+
+  document.addEventListener("keydown", (e)=>{
+    if(e.key === "Escape" && open){
+      ham.classList.remove("open");
+      menu.classList.remove("open");
+      open = false;
+    }
+  });
+});
+</script>
+
+</body>
+</html>
